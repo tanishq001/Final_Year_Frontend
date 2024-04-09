@@ -1,15 +1,20 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-const MusicPlayer = ({ ...props }) => {
-  const { id, name, Mood, artist } = props;
+const MusicPlayer = ({ item }) => {
+  const { id, name, Mood, artist } = item;
   const [html, setHtml] = useState("")
+  const dataRef = useRef()
   useEffect(() =>{
-    console.log(props)
       const fetchData  = async ()  =>  {
         try{
-          response = await axios.get(`https://open.spotify.com/episode/${id}`)
-          setHtml(response.data.html)
+          let response = await axios.get(`https://embed.spotify.com/oembed`,{
+            params:{
+              url : `https://open.spotify.com/track/${id}`
+            }
+          })
+          console.log(response)
+          dataRef.current.innerHTML = response.data.html
         }catch(e){
           console.log(e)
         }
@@ -17,7 +22,7 @@ const MusicPlayer = ({ ...props }) => {
 
       fetchData()
   },[])
-  return html
+  return <div ref={dataRef}>{name}</div>
   // return (
   //   <div class="mt-6 sm:mt-10 relative z-10 rounded-xl shadow-xl">
   //     <div class="bg-white border-slate-100 transition-all duration-500 dark:bg-slate-800 transition-all duration-500 dark:border-slate-500 border-b rounded-t-xl p-4 pb-6 sm:p-10 sm:pb-8 lg:p-6 xl:p-10 xl:pb-8 space-y-6 sm:space-y-8 lg:space-y-6 xl:space-y-8">

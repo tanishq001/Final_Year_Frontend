@@ -1,11 +1,19 @@
 import {React, useState} from 'react';
-import {Link} from 'react-dom'
-import axios from 'axios';
-export default function Login() {
+import {Link} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+// import { toast,ToastContainer } from "react-toastify"
+import toast, { Toaster } from 'react-hot-toast';
+import "react-toastify/dist/ReactToastify.css"
+
+const Login=() =>{
+  const navigate=useNavigate()
     const [inputs, setInputs] = useState({
       username:"",
       password:"",
     });
+
+    const [password,setPassword] = useState('');
+    const [username,setUsername] = useState('');
 
     const handleChange = (e) =>{
       setInputs((previousState) => ({
@@ -16,49 +24,50 @@ export default function Login() {
 
     const sendRequest = async () => {
       // add your api endpoint for login 
-      console.log(inputs)
-      try
-       { const response = await axios
-       .post(`https://localhost/api/users/login`,{
-        username:inputs.username,
-        password:inputs.password,
-       })}
-       
-       catch(error) {
-        console.error(error);
-       }
+      console.log(username,password)
+    try {
+      const response = await fetch(`http://localhost:8000/api/signinuser?username=${username}&password=${password}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
+      if(response.ok){
+        let data=await response.json()
+        
+        console.log(data.message);  
+        localStorage.setItem("isActiveUser", true)
+        if(localStorage.getItem("isActiveUser")){
+          navigate("/home")
+          
+        }
+      }
+      else
+      {
+        toast.error("Please fill at least 1 filter")
+        console.log(response);
+      }
+    } 
+    catch(error) {
+      console.error('Error :',error)
+    }
     };
-    const [password,setPassword] = useState('');
-
+  
 
     const handleSubmit = async (e) => {
       e.preventDefault();
       console.log(inputs);
-      sendRequest()
-    // api calling
-    // try {
-    //   const response = await fetch('/api/signin', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ username, password }),
-    //   });
-
-    //   if(response.ok){
-    //     history.push('/home')
-    //   }
-    //   else
-    //   {
-    //     console.log('Login failed invalid username or password');
-    //   }
-    // } 
-    // catch(error) {
-    //   console.error('Error :',error)
-    // }
+      sendRequest();
   };
   return (
+    <>
+    <div><Toaster
+  position="top-right"
+  reverseOrder={false}
+/></div>
     <div className="bg-black h-screen w-screen">
     <div className="flex justify-center items-center h-screen ">
       <div className="max-w-md w-full px-6 py-8">
@@ -70,21 +79,21 @@ export default function Login() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <input
-                type="email"
-                placeholder="Email Address or Phone number"
+                type="username"
+                placeholder="Enter Your Username"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-800 text-white"
                 name="username"
-                value={inputs.username}
+                // value={inputs.username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div>
               <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Enter Your Password"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-800 text-white"
                 name="password"
-                value={inputs.password}
+                // value={inputs.password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
@@ -97,15 +106,14 @@ export default function Login() {
           </form>
           <div className="mt-4 text-center">
             <span className="text-gray-400">New to EmoTunes? </span>
-            <b className="text-blue-600 cursor-pointer">
-            <Link to="/register" >Sign up Now!</Link></b>
-          </div>
-          <div className="mt-2 text-sm text-gray-400 text-center">
-            This page is protected by blah blah
+            <Link to="/register" ><b className="text-blue-600 cursor-pointer">Sign up Now!</b></Link>
+  
           </div>
         </div>
       </div>
     </div>
     </div>
+    </>
   );
 }
+export default Login;

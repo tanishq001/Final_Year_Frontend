@@ -8,7 +8,8 @@ import Register from './files/register/Register'
 import Home from './files/home/Home'
 import Navbar from './files/navbar/Navbar';
 import { AboutUs } from "./files/about_us/AboutUs";
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
+import { CleaningServices } from "@mui/icons-material";
 
 
 let UserContext = createContext({
@@ -30,8 +31,17 @@ const ProtectedRoute = ({children}) => {
 
 };
 
+
 function App() {
   const [isActive, setIsActive] = useState(true)
+const [userac, setUserac] = useState(false)
+
+
+
+  useEffect(()=>{
+    setUserac(localStorage.getItem("isActiveUser"))
+    console.log(userac)
+  })
   return (
 
     <div className="App">
@@ -44,7 +54,8 @@ function App() {
    <Route path ='/login' element ={ <Login/>} />
    <Route path = '/register' element ={<Register/> } />
 
-   <Route path= '/home' element={<ProtectedRoute><Home/></ProtectedRoute>}/>
+   { userac ? <Route path= '/home' element={<Home/>}/>
+   : <Route path= '/home' element={<Login/>}/>}
    
    <Route path= '/about' element={<AboutUs/>}/>
    {/* <Route path= '' */}

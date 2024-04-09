@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
 import Navbar from "../navbar/Navbar";
+import "../../loader.css"
 import VideoRecorder from "./VideoRecord";
 // import { data } from "../data/data";
 import MusicPlayer from "./MusicPlayer";
@@ -10,10 +11,9 @@ import VideoStream from "./VideoStream";
 const Home = () => {
   const webcamRef = React.useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
-  const [musicRecommendations, setMusicRecommendations] = useState([
-    {Mood: "Energetic", artists: "['Matthew West']", name: "Grace Wins", id: "3wF0rpX1njF2FLFGc45rxV"},
-    {Mood: "Energetic", artists: "['Matthew West']", name: "Grace Wins", id: "3wF0rpX1njF2FLFGc45rxV"}
-  ]);
+  const [emotion, setEmotion] = useState("")
+  const [musicRecommendations, setMusicRecommendations] = useState([]);
+  const [loading, setLoading] = useState(false)
 
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -42,7 +42,7 @@ const Home = () => {
         </h1>
         <div>
           {/* <VideoRecorder /> */}
-          <VideoStream {...{music:musicRecommendations, setMusic:setMusicRecommendations}} />
+          <VideoStream {...{music:musicRecommendations, setMusic:setMusicRecommendations, setEmotion: setEmotion, setLoading:setLoading}} />
         </div>
         {/* <button
           onClick={capture}
@@ -65,15 +65,20 @@ const Home = () => {
             </ul>
           </div>
         )} */}
+        <h2 className="text-2xl font-bold mb-4 text-white">
+             Emotion: {emotion}
+            </h2>
+            {loading && (<div className="lds-ring"><div></div><div></div><div></div><div></div></div>)}
         {musicRecommendations.length > 0 && (
           <div className="mt-8">
             <h2 className="text-2xl font-bold mb-4 text-white">
               Music Recommendations:
             </h2>
             <div className="grid lg:grid-cols-3 grid-cols-1 max-w-7xl mx-auto gap-4 py-4">
-              {musicRecommendations.map((recommendation, index) => (
-                <MusicPlayer key={index} {...recommendation} />
-              ))}
+              {musicRecommendations.map((recommendation, index) => {
+                console.log(recommendation)
+                 return <MusicPlayer key={index} item={recommendation} />
+})}
             </div>
           </div>
         )}

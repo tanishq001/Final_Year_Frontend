@@ -3,7 +3,7 @@ import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const navLinks = [
   {
@@ -11,23 +11,25 @@ export const navLinks = [
     title: "Home",
   },
   {
-    id: "login",
-    title: "login",
-  },
-  {
     id: "about",
-    title: "about",
+    title: "About",
   },
   {
-    id: "register",
-    title: "Register",
-  },
+    id: "login",
+    title: "Logout"
+  }
 ];
 
+
 const Navbar = () => {
+  const navigate=useNavigate()
   const [active, setActive] = useState("Home");
   const [toggle, setToggle] = useState(false);
-
+  const Logout=(id)=>{
+    if(id=="login"){
+      localStorage.removeItem("isActiveUser")
+    }
+  }
   return (
     <header className="bg-black text-white">
       <nav className="w-xl/2 flex py-6 justify-between  text-white items-center navbar mx-10">
@@ -37,7 +39,9 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <ul className="list-none sm:flex hidden justify-end items-center flex-1">
           {navLinks.map((nav, index) => (
-           <Link to={`/${nav.id}`} key={nav.id}>
+           <Link to={`/${nav.id}`} key={nav.id} onClick={()=>{
+            Logout(nav.id)
+           }}>
               <li
                 key={nav.id}
                 className={`font-poppins font-normal cursor-pointer text-[16px] hover:text-blue-400 ${
