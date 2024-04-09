@@ -24,7 +24,7 @@ const ProtectedRoute = ({children}) => {
   const user = useContext(UserContext);
 
   if(!user.isAuthenticated) {
-      return <Navigate to="/register" replace />
+      return <Navigate to="/login" replace />
   }
   
   return children
@@ -49,7 +49,7 @@ const [userac, setUserac] = useState(false)
      <Router>
       <Routes>
       <Route  path="/"
-   element ={<Navigate to='/register'/>} /> 
+   element ={<Navigate to='/login'/>} /> 
    
    <Route path ='/login' element ={ <Login/>} />
    <Route path = '/register' element ={<Register/> } />

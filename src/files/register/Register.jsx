@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import Navbar from '../navbar/Navbar';
 
 export default function Register() {
@@ -10,7 +10,7 @@ export default function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const userNameRef = useRef();
-
+  const navigate=useNavigate()
   const sendRequest = async () => {
     // add your api endpoint for login 
     console.log(userName,password)
@@ -21,7 +21,7 @@ export default function Register() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ userName, password }),
+      body: JSON.stringify({ userName, email, password }),
     });
 
     if(response.ok){
