@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom"
+import toast, { Toaster } from 'react-hot-toast';
+import "react-toastify/dist/ReactToastify.css"
 import Navbar from '../navbar/Navbar';
 
 export default function Register() {
@@ -23,15 +25,15 @@ export default function Register() {
       },
       body: JSON.stringify({ userName, email, password }),
     });
-
+    let data=await response.json()
     if(response.ok){
-      console.log(response.body);
+      console.log(data.message);
       console.log("Login Accepted");
-      navigate('/home');
+      navigate('/Login');
     }
     else
     {
-      console.log('Login failed invalid username or password');
+      toast.error(data.message)
     }
   } 
   catch(error) {
@@ -49,6 +51,10 @@ export default function Register() {
 
   return (
     <>
+    <div><Toaster
+  position="top-right"
+  reverseOrder={false}
+/></div>
     <div className="bg-black min-h-screen flex justify-center items-center">
       <div className="max-w-md w-full px-6 py-8 rounded-lg shadow-lg">
         <div className="text-center mb-8">

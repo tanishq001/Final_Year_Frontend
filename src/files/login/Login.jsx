@@ -34,21 +34,19 @@ const Login=() =>{
         },
         body: JSON.stringify({ username, password }),
       });
-
+      let data=await response.json()
       if(response.ok){
-        let data=await response.json()
-        
         console.log(data.message);  
         localStorage.setItem("isActiveUser", true)
         if(localStorage.getItem("isActiveUser")){
-          navigate("/home")
-          
+          toast.success(data.message)
+          navigate("/home")      
         }
       }
       else
       {
-        toast.error("Please fill at least 1 filter")
-        console.log(response);
+        toast.error(data.message)
+        console.log(data.message);
       }
     } 
     catch(error) {
